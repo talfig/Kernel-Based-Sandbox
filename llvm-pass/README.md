@@ -108,7 +108,3 @@ Now `instrumented.ll` will have `call void @dummy(i32 <id>)` before each libcall
 - The pass avoids editing functions without bodies.
 - You may tune which calls count as libcalls, hashing modulus, and ID mode using flags.
 - The JSON policy can be used by your in-kernel monitor to map observed dummy IDs to the allowed edges in the automaton.
-
-## License
-
-MIT
