@@ -5,7 +5,7 @@ This repository combines:
 - **Part 1 (LLVM pass)**: Extract per-function library-call automata, instrument calls with `dummy(int)`, emit DOT + JSON.
 - **Part 2 (Kernel enforcement)**: A Linux kernel module that enforces the automata at runtime by hooking the **`dummy` system call** using a kprobe and killing the process on violations. Comes with a user-space loader **`sandboxctl`** and a tiny **`libdummy`** that implements `dummy(int)` as a syscall wrapper.
 
-This follows the IISc project brief “Building an in-kernel, per-process sandbox” (Autumn 2024) and implements the **dummy syscall** approach for enforcing libc call policies in-kernel. fileciteturn1file0
+This follows the IISc project brief “Building an in-kernel, per-process sandbox” (Autumn 2024) and implements the **dummy syscall** approach for enforcing libc call policies in-kernel. 
 
 ---
 
@@ -121,16 +121,16 @@ Ensure the macro `__NR_dummy` inside `libdummy.c` matches the number you assigne
    - applies **epsilon-closure**,
    - **SIGKILLs** the process if the frontier becomes empty (policy violation).
 
-> The kernel module is intentionally strict: any unrecognized ordering of calls kills the process. This mirrors the project brief’s enforcement semantics. fileciteturn1file0
+> The kernel module is intentionally strict: any unrecognized ordering of calls kills the process. This mirrors the project brief’s enforcement semantics. 
 
 ---
 
 ## Data structures and fidelity to spec
 
-- **Automaton**: We export a **per-function NFA** (nodes=libcall sites, edges labeled by the *source* libcall name, plus `ϵ` edges across CFG forks/joins). This matches the course’s “library call flow graph”. fileciteturn1file0
+- **Automaton**: We export a **per-function NFA** (nodes=libcall sites, edges labeled by the *source* libcall name, plus `ϵ` edges across CFG forks/joins). This matches the course’s “library call flow graph”. 
 - **Dummy ID scheme**: The pass assigns both **`uniqueID`** and **`dummyID` = counter % `mod`** (with `resetCount = counter / mod`). The kernel uses either `dummy` or `unique` match mode.
 - **Hash-table with bucketed linked lists** (Part 1 internals) preserves your `mod200` idea for space efficiency and time-of-entry differentiation; JSON carries full info so Part 2 does not rehash.
-- **Frontier handling**: We maintain a per-PID **bitset frontier**, perform **epsilon-closure**, and transition on observed IDs, killing when empty — i.e., standard NFA semantics mandated by the brief. fileciteturn1file0
+- **Frontier handling**: We maintain a per-PID **bitset frontier**, perform **epsilon-closure**, and transition on observed IDs, killing when empty — i.e., standard NFA semantics mandated by the brief. 
 
 ---
 
@@ -143,10 +143,6 @@ Ensure the macro `__NR_dummy` inside `libdummy.c` matches the number you assigne
 
 ## Testing with mbed-tls
 
-The brief requires testing on **mbed-tls** variants. Build mbed-tls, compile test binaries to IR, run the pass, instrument, link `libdummy`, then load policies for the relevant functions with `sandboxctl`. Record which configuration you used in your report. fileciteturn1file0
+The brief requires testing on **mbed-tls** variants. Build mbed-tls, compile test binaries to IR, run the pass, instrument, link `libdummy`, then load policies for the relevant functions with `sandboxctl`. Record which configuration you used in your report.
 
 ---
-
-## License
-
-MIT for all code in this repo.
